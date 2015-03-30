@@ -1,0 +1,49 @@
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
+
+# This file should be included when you package your plugin.
+
+[general]
+name=QgsWPSClientPlugin
+description=QgsWPSClientPlugin aims to give access to WPS Capabilities through an easy to use User Interface
+category=Web
+version=2.0.15
+qgisMinimumVersion=1.5
+qgisMaximumVersion=2.99
+class_name=QgsWPSClientPlugin
+website=http://www.geolabs.fr
+author=Gérald Fenoy - GeoLabs SARL
+email=gerald.fenoy@geolabs.fr
+
+changelog=
+ Rev. 2.0.15
+   - Fix multiple input raster
+   - Fix multiple output with different mimeType
+ Rev. 2.0.14
+   - Contributor Enrico De Guidi added
+ Rev 2.0.13
+   - Fix issue #11180
+ Rev 2.0.12
+   - new connection bug fixed
+ Rev 2.0.11
+   - Fix rstrip being called on qstring
+   - Fix progressbar 
+ Rev 2.0.10
+   - Fix #11180 - GEOSERVER XML issue
+ Rev 2.0.9
+   - Fix URL editing error
+ Rev 2.0.8
+   - Fix #10717 - remove leading and ending whitespaces from URL
+ Rev 2.0.7
+   - Maintenance commit
+ Rev 2.0.6
+   - Fix #10717 - remove leading and ending whitespaces from URL
+ Rev 2.0.5
+   - QGIS 1 / 2 compatibility fixes
+   - encoding fixes
+
+homepage=http://www.geolabs.fr
+tracker=https://github.com/GeoLabs/QgsWPSClientPlugin/issues
+repository=https://github.com/GeoLabs/QgsWPSClientPlugin
