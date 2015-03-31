@@ -18,13 +18,13 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputString import OutputString
 from sextante.outputs.OutputFactory import OutputFactory
-from QgsWPSClientPlugin.wpslib.wpsserver import WpsServer
-from QgsWPSClientPlugin.wpslib.processdescription import ProcessDescription
-from QgsWPSClientPlugin.wpslib.processdescription import getFileExtension,isMimeTypeVector,isMimeTypeRaster,isMimeTypeText,isMimeTypeFile
-from QgsWPSClientPlugin.wpslib.processdescription import StringInput, TextInput, SelectionInput, VectorInput, MultipleVectorInput, RasterInput, MultipleRasterInput, FileInput, MultipleFileInput, ExtentInput, CrsInput, VectorOutput, RasterOutput, StringOutput
-from QgsWPSClientPlugin.wpslib.executionrequest import ExecutionRequest
-from QgsWPSClientPlugin.wpslib.executionrequest import createTmpGML
-from QgsWPSClientPlugin.wpslib.executionresult import ExecutionResult
+from QgsWPSClient.wpslib.wpsserver import WpsServer
+from QgsWPSClient.wpslib.processdescription import ProcessDescription
+from QgsWPSClient.wpslib.processdescription import getFileExtension,isMimeTypeVector,isMimeTypeRaster,isMimeTypeText,isMimeTypeFile
+from QgsWPSClient.wpslib.processdescription import StringInput, TextInput, SelectionInput, VectorInput, MultipleVectorInput, RasterInput, MultipleRasterInput, FileInput, MultipleFileInput, ExtentInput, CrsInput, VectorOutput, RasterOutput, StringOutput
+from QgsWPSClient.wpslib.executionrequest import ExecutionRequest
+from QgsWPSClient.wpslib.executionrequest import createTmpGML
+from QgsWPSClient.wpslib.executionresult import ExecutionResult
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import qApp,QApplication,QMessageBox

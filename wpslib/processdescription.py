@@ -25,7 +25,7 @@ from qgis.core import QgsNetworkAccessManager
 from wpsserver import WpsServer
 from collections import namedtuple
 import os
-import QgsWPSClientPlugin.apicompat
+import QgsWPSClient.apicompat
 
 
 # Process description example:

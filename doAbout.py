@@ -20,7 +20,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from QgsWPSClientPlugin import version,  date
+from QgsWPSClient import version,  date
 
 
 from Ui_QgsWpsAbout import Ui_dlgAbout

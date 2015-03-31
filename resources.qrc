@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/plugins/QgsWPSClientPlugin">
+  <qresource prefix="/plugins/QgsWPSClient">
     <file>exception.xsl</file>
     <file>images/wps-add.png</file>
     <file>images/button_cancel.png</file>

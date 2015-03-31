@@ -17,7 +17,7 @@
   ***************************************************************************
 """
 def name():
-  return "QgsWPSClientPlugin"
+  return "QgsWPSClient"
   
 def description():
   return "Client for Web Processing Services"
@@ -47,5 +47,5 @@ def homepage():
   return "http://www.geolabs.fr"
   
 def classFactory(iface):
-  from qgswps import QgsWPSClientPlugin
-  return QgsWPSClientPlugin(iface)  
+  from qgswps import QgsWPSClient
+  return QgsWPSClient(iface)  

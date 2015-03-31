@@ -20,7 +20,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
 from qgis.core import *
-from QgsWPSClientPlugin import version
+from QgsWPSClient import version
 from wpslib.wpsserver import WpsServer
 from Ui_qgswpsgui import Ui_QgsWps
 from qgswpsbookmarks import Bookmarks

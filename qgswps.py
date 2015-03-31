@@ -21,14 +21,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from QgsWpsDockWidget import QgsWpsDockWidget
-from QgsWPSClientPlugin import version
+from QgsWPSClient import version
 from doAbout import DlgAbout
 import apicompat
 
 SEXTANTE_SUPPORT = False
 try:
     from sextante.core.Sextante import Sextante
-    from QgsWPSClientPlugin.sextantewps.WpsAlgorithmProvider import WpsAlgorithmProvider
+    from QgsWPSClient.sextantewps.WpsAlgorithmProvider import WpsAlgorithmProvider
     SEXTANTE_SUPPORT = True
 except ImportError:
     pass
@@ -40,8 +40,8 @@ import resources_rc
 DEBUG = False
 
 # Our main class for the plugin
-class QgsWPSClientPlugin:
-  MSG_BOX_TITLE = "QgsWPSClientPlugin"
+class QgsWPSClient:
+  MSG_BOX_TITLE = "QgsWPSClient"
   
   def __init__(self, iface):
     # Save reference to the QGIS interface

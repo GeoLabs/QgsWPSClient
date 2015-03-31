@@ -23,7 +23,7 @@ from PyQt4.QtGui import QApplication,QMessageBox
 from PyQt4.QtSql import *
 from qgis.core import QgsVectorFileWriter,  QgsDataSourceURI
 import os, sys, string, tempfile, base64
-import QgsWPSClientPlugin.apicompat
+import QgsWPSClient.apicompat
 import cgi
 
 
@@ -361,7 +361,7 @@ class ExecutionRequest(QObject):
     def addResponseFormStart(self):
         self.request += "<wps:ResponseForm>\n"
         # The server should store the result. No lineage should be returned but status should be activated
-        self.request += "<wps:ResponseDocument lineage=\"false\" storeExecuteResponse=\"false\" status=\"false\">\n"
+        self.request += "<wps:ResponseDocument lineage=\"false\" storeExecuteResponse=\"true\" status=\"true\">\n"
 
     def addResponseFormEnd(self):
         self.request += "</wps:ResponseDocument>\n"

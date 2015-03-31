@@ -24,9 +24,9 @@ from PyQt4 import QtXml
 from PyQt4.QtXmlPatterns import QXmlQuery
 from qgis.core import QgsNetworkAccessManager
 from functools import partial
-from QgsWPSClientPlugin.wpslib.processdescription import getFileExtension
+from QgsWPSClient.wpslib.processdescription import getFileExtension
 import tempfile,  base64
-import QgsWPSClientPlugin.apicompat
+import QgsWPSClient.apicompat
 
 
 # Execute result example:
@@ -116,7 +116,7 @@ class ExecutionResult(QObject):
         thePostHttp = QgsNetworkAccessManager.instance()
         request = QNetworkRequest(processUrl)
         request.setHeader( QNetworkRequest.ContentTypeHeader, "text/xml" )
-        qDebug("Post REQUEST=" + pystring(postData))
+        #qDebug("Post REQUEST=" + pystring(postData))
         self.thePostReply = thePostHttp.post(request, postData)
         self.thePostReply.finished.connect(partial(self.resultHandler, self.thePostReply) )
         
@@ -132,12 +132,12 @@ class ExecutionResult(QObject):
         reply.deleteLater()
         qDebug(resultXML)
         self.parseResult(resultXML)
-        self._processExecuted = True
         return True
 
     def parseResult(self, resultXML):
         self.doc = QtXml.QDomDocument()
         self.doc.setContent(resultXML,  True)
+
         resultNodeList = self.doc.elementsByTagNameNS("http://www.opengis.net/wps/1.0.0","Output")
 
         # TODO: Check if the process does not run correctly before
@@ -198,15 +198,41 @@ class ExecutionResult(QObject):
               else:
                 QMessageBox.warning(None, '', 
                   pystring(QApplication.translate("QgsWps", "WPS Error: Missing reference or literal data in response")))
+            self._processExecuted = True
         else:
+            resultNodeList = self.doc.elementsByTagNameNS("http://www.opengis.net/wps/1.0.0","ExecuteResponse")
+            if resultNodeList.size() > 0:
+                f_element = resultNodeList.at(0).toElement()
+                fileUrl = f_element.attribute("statusLocation", "0")
+                if fileUrl != "0":
+                    self.myHttp = QgsNetworkAccessManager.instance()
+                    url = QUrl()
+                    url.setUrl(fileUrl)
+                    self.thePostReply=self.myHttp.get(QNetworkRequest(url))
+                    self.thePostReply.finished.connect(partial(self.resultHandler, self.thePostReply) )
+
             status = self.doc.elementsByTagName("Status")
             try:
                 child = status.at(0).firstChildElement()
                 if child.localName() == "ProcessSucceeded":
                     self._successResultCallback()
                 else:
-                    self.errorHandler(child.text())
-            except:
+                    if child.localName() == "ProcessAccepted":
+                        self.showProgressBar(0,100,child.text())
+                    else:
+                        if child.localName() == "ProcessStarted":
+                            v=child.attribute("percentCompleted","0")
+                            self.showProgressBar(int(v),100,child.text())
+                        else:
+                            if child.localName() == "ProcessSucceeded":
+                                QMessageBox.warning(None, '', 
+                                    pystring(QApplication.translate("QgsWps", "WPS Error: Service ended but no result was found")))
+                                return False
+                            else:
+                                self.errorHandler(child.text())
+            except Exception,e:
+                QMessageBox.warning(None, '', 
+                    pystring(QApplication.translate("QgsWps", "WPS Error: ")+str(e)))
                 return self.errorHandler(resultXML)
 
     def fetchResult(self, encoding, schema,  fileLink, identifier, mimeType):

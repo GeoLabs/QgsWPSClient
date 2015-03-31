@@ -117,7 +117,7 @@ class WpsServer(QObject):
         self.capabilitiesRequestFinished.emit()
 
     def parseCapabilitiesXML(self):
-        from QgsWPSClientPlugin.wpslib.processdescription import ProcessDescription
+        from QgsWPSClient.wpslib.processdescription import ProcessDescription
         version    = self.doc.elementsByTagNameNS("http://www.opengis.net/wps/1.0.0","Process")
         title      = self.doc.elementsByTagNameNS("http://www.opengis.net/ows/1.1","Title")    
         identifier = self.doc.elementsByTagNameNS("http://www.opengis.net/ows/1.1","Identifier")

@@ -4,8 +4,8 @@ from processing.core.ProcessingUtils import mkdir, ProcessingUtils
 from WpsAlgorithm import WpsAlgorithm
 from AddNewWpsAction import AddNewWpsAction
 from WpsServerAction import WpsServerAction
-from QgsWPSClientPlugin.wpslib.wpsserver import WpsServer
-from QgsWPSClientPlugin.wpslib.processdescription import ProcessDescription
+from QgsWPSClient.wpslib.wpsserver import WpsServer
+from QgsWPSClient.wpslib.processdescription import ProcessDescription
 import os
 from PyQt4 import QtGui
 

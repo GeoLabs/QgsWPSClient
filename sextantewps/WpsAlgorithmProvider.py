@@ -4,8 +4,8 @@ from sextante.core.SextanteUtils import mkdir, SextanteUtils
 from WpsAlgorithm import WpsAlgorithm
 from AddNewWpsAction import AddNewWpsAction
 from WpsServerAction import WpsServerAction
-from QgsWPSClientPlugin.wpslib.wpsserver import WpsServer
-from QgsWPSClientPlugin.wpslib.processdescription import ProcessDescription
+from QgsWPSClient.wpslib.wpsserver import WpsServer
+from QgsWPSClient.wpslib.processdescription import ProcessDescription
 import os
 from PyQt4 import QtGui
 

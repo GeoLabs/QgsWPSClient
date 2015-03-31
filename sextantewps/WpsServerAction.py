@@ -1,7 +1,7 @@
 from sextante.gui.ToolboxAction import ToolboxAction
 from sextante.core.Sextante import Sextante
 from WpsAlgorithm import WpsAlgorithm
-from QgsWPSClientPlugin.wpslib.processdescription import ProcessDescription
+from QgsWPSClient.wpslib.processdescription import ProcessDescription
 import os
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
