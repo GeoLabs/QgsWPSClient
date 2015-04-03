@@ -252,7 +252,7 @@ class ExecutionRequest(QObject):
         # text/plain inputs ########################################################
         # Handle 'as reference' playlist
         mimeType = htmlescape(mimeType)
-        schema = "schema=\"%s\"" % htmlescape(schema) if schema else ""
+        schema = "schema=\"%s\" " % htmlescape(schema) if schema else ""
         encoding = "encoding=\"%s\"" % htmlescape(encoding) if encoding else ""
         ref = htmlescape(ref)
         self.addExecuteRequestInputStart(identifier, False)
@@ -274,7 +274,7 @@ class ExecutionRequest(QObject):
         #if self.tools.isMimeTypeVector(mimeType) != None and encoding != "base64":
         self.addExecuteRequestInputStart(identifier)
         
-        self.request += "<wps:ComplexData mimeType=\"%s\" schema=\"%s\"%s>" % (mimeType, schema, encoding)
+        self.request += "<wps:ComplexData mimeType=\"%s\" schema=\"%s\" %s>" % (mimeType, schema, encoding)
         self.request += "<![CDATA["
         self.request += gmldata.replace("> <","><")
 
