@@ -44,7 +44,7 @@ class QgsWpsGui(QDialog, QObject, Ui_QgsWps):
     QDialog.__init__(self, parent, fl)
     self.setupUi(self)
     self.fl = fl
-    self.setWindowTitle('QGIS WPS-Client '+version())
+    self.setWindowTitle('QgsWPSClient-'+version()+' Service Chooser')
     self.dlgAbout = DlgAbout(parent)
    
   def initQgsWpsGui(self):    

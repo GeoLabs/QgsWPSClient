@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  /***************************************************************************
-   QGIS Web Processing Service Plugin
+   QGIS Web Processing Service Plugin Main Widget
   -------------------------------------------------------------------
  Date                 : 09 November 2009
  Copyright            : (C) 2009 by Dr. Horst Duester
@@ -49,8 +49,8 @@ class QgsWPSClient:
     self.localePath = ""
     
     #Initialise the translation environment    
-    userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/wps"  
-    systemPluginPath = QgsApplication.prefixPath()+"/share/qgis/python/plugins/wps"
+    userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/QgsWPSClient"  
+    systemPluginPath = QgsApplication.prefixPath()+"/share/qgis/python/plugins/QgsWPSClient"
     myLocale = pystring(QSettings().value("locale/userLocale"))[0:2]
     if QFileInfo(userPluginPath).exists():
       self.pluginPath = userPluginPath
@@ -72,7 +72,7 @@ class QgsWPSClient:
   def initGui(self):
  
     # Create action that will start plugin configuration
-     self.action = QAction(QIcon(":/plugins/wps/images/wps-add.png"), "QgsWPSClient", self.iface.mainWindow())
+     self.action = QAction(QIcon(":/plugins/QgsWPSClient/images/wps-add.png"), "QgsWPSClient", self.iface.mainWindow())
      self.action.triggered.connect(self.run)
      
      self.actionAbout = QAction("About", self.iface.mainWindow())
@@ -85,12 +85,12 @@ class QgsWPSClient:
          self.iface.addPluginToWebMenu("QgsWPSClient", self.action)
          self.iface.addPluginToWebMenu("QgsWPSClient", self.actionAbout)
      else:
-         self.iface.addPluginToMenu("QgsWPSClient-Plugin", self.action)
-         self.iface.addPluginToWebMenu("QgsWPSClient-Plugin", self.action)
+         self.iface.addPluginToMenu("QgsWPSClient", self.action)
+         self.iface.addPluginToWebMenu("QgsWPSClient", self.action)
 
      
      self.myDockWidget = QgsWpsDockWidget(self.iface)
-     self.myDockWidget.setWindowTitle('QgsWPSClient-Plugin')
+     self.myDockWidget.setWindowTitle('QgsWPSClient-'+version())
      self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.myDockWidget)
      self.myDockWidget.show()
 
@@ -114,8 +114,8 @@ class QgsWPSClient:
          self.iface.removePluginWebMenu("QgsWPSClient", self.action)
          self.iface.removePluginWebMenu("QgsWPSClient", self.actionAbout)
      else:
-         self.iface.removePluginToMenu("QgsWPSClient-Plugin", self.action)      
-         self.iface.removePluginToMenu("QgsWPSClient-Plugin", self.actionAbout)
+         self.iface.removePluginToMenu("QgsWPSClient", self.action)      
+         self.iface.removePluginToMenu("QgsWPSClient", self.actionAbout)
          
      self.iface.removeToolBarIcon(self.action)
     

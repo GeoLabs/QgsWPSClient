@@ -2,7 +2,7 @@
 name=QgsWPSClient
 description=QgsWPSClient aims to give access to WPS Capabilities through an easy to use User Interface
 category=Web
-version=2.0.15
+version=2.0.17
 qgisMinimumVersion=1.5
 qgisMaximumVersion=2.99
 class_name=QgsWPSClient
@@ -11,6 +11,12 @@ author=Dr. Horst Duester / Sourcepole AG Zurich
 email=horst.duester@sourcepole.ch
 
 changelog=
+ Rev. 2.0.17
+   - Fix request encoding issue 
+ Rev. 2.0.16
+   - Add text/csv mimetype support and tables gesture
+   - Display message coming from GetStatus
+   - Keep the GetCapabilities loaded 
  Rev. 2.0.15
    - Fix multiple input raster
    - Fix multiple output with different mimeType

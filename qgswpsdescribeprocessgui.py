@@ -24,12 +24,11 @@ from ui_qgswpsdescribeprocess import Ui_QgsWpsDescribeProcessGUI
 import os, sys, string
 
 class QgsWpsDescribeProcessGui(QDialog, QObject, Ui_QgsWpsDescribeProcessGUI):
-  MSG_BOX_TITLE = "QGIS WPS Client"
-  
+
   def __init__(self, parent, fl):
     QDialog.__init__(self, parent, fl)
     self.setupUi(self)
-    self.setWindowTitle('QGIS WPS-Client '+version())
+    self.setWindowTitle('QgsWPSClient-'+version())
     self.selectedServiceName = parent.cmbConnections.currentText()
     
     

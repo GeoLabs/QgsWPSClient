@@ -25,11 +25,13 @@ from qgis.core import *
 from . import version
 from qgswpsgui import QgsWpsGui
 from qgswpsdescribeprocessgui import QgsWpsDescribeProcessGui
+from qgswpstablegui import QgsWpsTableGui
+from qgswpstablesgui import QgsWpsTablesGui
 from qgswpstools import QgsWpsTools
 from qgsnewhttpconnectionbasegui import QgsNewHttpConnectionBaseGui
 from wpslib.wpsserver import WpsServer
 from wpslib.processdescription import ProcessDescription
-from wpslib.processdescription import getFileExtension,isMimeTypeVector,isMimeTypeRaster,isMimeTypeText,isMimeTypeFile,isMimeTypePlaylist
+from wpslib.processdescription import getFileExtension,isMimeTypeVector,isMimeTypeRaster,isMimeTypeTable,isMimeTypeText,isMimeTypeFile,isMimeTypePlaylist
 from wpslib.processdescription import getFileExtension,isMimeTypeVector,isMimeTypeRaster,isMimeTypeText,isMimeTypeFile
 from wpslib.processdescription import StringInput, TextInput, SelectionInput, VectorInput, MultipleVectorInput, RasterInput, MultipleRasterInput, FileInput, MultipleFileInput, ExtentInput, CrsInput, VectorOutput, RasterOutput, StringOutput
 from wpslib.executionrequest import ExecutionRequest
@@ -41,6 +43,7 @@ from streaming import Streaming
 
 import resources_rc,  string
 import apicompat
+import sys
 
 DEBUG = False
 
@@ -64,8 +67,9 @@ class QgsWpsDockWidget(QDockWidget, Ui_QgsWpsDockWidget):
         self.iface = iface
         self.tools = QgsWpsTools(self.iface)
         self.dataStream = None # Used for streaming
-        self.setWindowTitle('QgsWPSClient-Plugin '+version())
-
+        self.setWindowTitle('QgsWPSClient-'+version())
+        self.dlgTables=None
+        
         self.defaultServers = {'Kappasys WPS':'http://www.kappasys.ch/pywps/pywps.cgi',
             'geodati.fmach.it':'http://geodati.fmach.it/zoo/',
             'zoo project':'http://zoo-project.org/wps-foss4g2011/zoo_loader.cgi',
@@ -102,7 +106,7 @@ class QgsWpsDockWidget(QDockWidget, Ui_QgsWpsDockWidget):
             status = "processing"
             done = total = 0
 
-        self.btnConnect.setEnabled(complete)
+        self.btnConnect.setEnabled(True)
         self.btnKill.setEnabled(not complete)
         if complete:
             self.progressBar.setRange(0, 100)
@@ -315,7 +319,8 @@ class QgsWpsDockWidget(QDockWidget, Ui_QgsWpsDockWidget):
     def defineProcess(self):
         """Create the execute request"""
         self.dlgProcess.close()
-        self.dlg.close()
+        # TODO : add a GroupBox for this service
+        #self.dlg.close()
         doc = QtXml.QDomDocument()
         doc.setContent(self.process.processXML)
 
@@ -470,13 +475,14 @@ class QgsWpsDockWidget(QDockWidget, Ui_QgsWpsDockWidget):
         if True:
 #            self.tools.popUpMessageBox("Execute request", postString)
             # Write the request into a file
-            outFile = open('/tmp/qwps_execute_request.xml', 'w')
+            import codecs
+            outFile = codecs.open('/tmp/qwps_execute_request.xml', 'w','utf-8')
             outFile.write(postString)
             outFile.close()
 
         QApplication.restoreOverrideCursor()
         self.setStatus("processing")
-        self.wps = ExecutionResult(self.getLiteralResult, self.getResultFile, self.successResult, self.errorResult, self.streamingHandler,  self.progressBar)
+        self.wps = ExecutionResult(self.getLiteralResult, self.getResultFile, self.successResult, self.errorResult, self.streamingHandler,  self.progressBar, self.statusLabel)
         self.wps.executeProcess(self.process.processUrl, postString)
         if len(self.process.inputs) > 0:
           self.wps.thePostReply.uploadProgress.connect(lambda done, total: self.setStatus("upload", done, total))
@@ -587,6 +593,44 @@ class QgsWpsDockWidget(QDockWidget, Ui_QgsWpsDockWidget):
             # We can directly attach the new layer
             rLayer = QgsRasterLayer(resultFile, layerName)
             bLoaded = QgsMapLayerRegistry.instance().addMapLayer(rLayer)
+
+        # Table data
+        elif isMimeTypeTable(self.mimeType) != None:
+            #TODO: this should be handled in a separate diaqgswps.pylog to save the text output as file'
+            QApplication.restoreOverrideCursor()
+            flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint  # QgisGui.ModalDialogFlags
+            if not(self.dlgTables):
+                self.dlgTables = QgsWpsTablesGui(self.dlg, flags)
+            data = [(layerName,[])]
+            self.dlgTables.addItems(self.dlgTables.model, data)
+            self.dlgTables.show()
+            dlgTable = QgsWpsTableGui(self.dlg, flags, layerName)
+            text = open(resultFile, 'r').read()
+            lines=text.split("\n")
+            for i in range(len(lines)):
+                ccol=lines[i].split(",")
+                if len(ccol)==1:
+                    lines.pop(i)
+            cols=lines[0].split(",")
+            tableWidget = QTableWidget(len(lines)-1,len(cols))
+            #print >> sys.stderr,lines
+            labels=[]
+            for i in range(len(lines)):
+                ccol=lines[i].split(",")
+                for j in range(len(ccol)):
+                    if i==0:
+                        labels+=[str(ccol[j])]
+                        if j + 1 == len(ccol):
+                            tableWidget.setHorizontalHeaderLabels(labels)
+                    else:
+                        tableWidget.setItem(i-1,j,QTableWidgetItem(str(ccol[j])))
+            tableWidget.show()
+            self.vlayout = QVBoxLayout(dlgTable)
+            self.vlayout.addWidget(tableWidget)
+            self.dlgTables.bindTableDisplay(dlgTable,layerName,resultFile)
+            dlgTable.show()
+            # TODO: This should be a text dialog with safe option
+            #self.tools.popUpMessageBox(QCoreApplication.translate("QgsWps",'Process result (text/plain)'),tableWidget.show())
 
         # Text data
         elif isMimeTypeText(self.mimeType) != None:

@@ -30,7 +30,7 @@ class DlgAbout( QDialog, Ui_dlgAbout ):
         QDialog.__init__( self )
         self.iface = iface
         self.setupUi( self )
-        self.setWindowTitle('QgsWPSClient-Plugin '+version())
+        self.setWindowTitle('QgsWPSClient-'+version())
         self.tabWidget.setCurrentIndex( 0 )
     
         # setup labels
@@ -40,7 +40,7 @@ class DlgAbout( QDialog, Ui_dlgAbout ):
         self.lblDate.setText( self.tr( "Date: " )+ dt )
     
         # setup texts
-        aboutString = pystring( "The goal of QgsWPSClient-Plugin is to provide client to connect to any WPS-Server. " )
+        aboutString = pystring( "The goal of QgsWPSClient is to provide client to connect to any WPS-Server. " )
 
         contribString = pystring( "<p><center><b>The following people contributed to QgsWPS:</b></center></p>" )
         contribString += pystring(u"<p>Gérald Fenoy GeoLabs SARL / France<br>" )
@@ -57,14 +57,14 @@ class DlgAbout( QDialog, Ui_dlgAbout ):
         contribString += pystring("Robert Szczepanek (Icon) <br><br>")
         contribString += pystring( "<b>and special thanks to the QGIS team</b></p>" )
 
-        sponsorString = pystring( "<p><center><b>The following people or institutions funded QgsWPS:</b></center></p><br<br>" )
+        sponsorString = pystring( "<p><center><b>The following people or institutions funded QgsWPSClient:</b></center></p><br<br>" )
         sponsorString += pystring(u"Sourcepole AG, Weberstrasse 5, CH-8004 Zürich<br><br>")        
         sponsorString += pystring("Provincia di Terni - Ufficio Cave, Difesa del suolo, Protezione Civile e SIT <br>with the collaboration of Studio Associato GfosServices  <br>")
     
         licenseString = pystring("LICENSING INFORMATION:\n\n") 
         licenseString += pystring("QgsWPS Plugin is copyright (C) 2009 Dr. Horst Duester\n\n")
         licenseString += pystring("horst.duester@kappasys.ch\n\n")
-        licenseString += pystring("QgsWPS-Plugin icon is copyright (C) 2009 Robert Szczepanek\n\n")
+        licenseString += pystring("QgsWPSClient icon is copyright (C) 2009 Robert Szczepanek\n\n")
         licenseString += pystring("robert@szczepanek.pl\n\n")
         licenseString += pystring( "Licensed under the terms of GNU GPL 2.\n\n")
         licenseString += pystring( "This program is free software; you can redistribute it and/or modify it under ")

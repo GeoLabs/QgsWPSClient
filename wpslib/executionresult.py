@@ -25,7 +25,7 @@ from PyQt4.QtXmlPatterns import QXmlQuery
 from qgis.core import QgsNetworkAccessManager
 from functools import partial
 from QgsWPSClient.wpslib.processdescription import getFileExtension
-import tempfile,  base64
+import tempfile, base64, sys
 import QgsWPSClient.apicompat
 
 
@@ -83,7 +83,7 @@ class ExecutionResult(QObject):
     
     fetchingResult = pyqtSignal(int)
 
-    def __init__(self, literalResultCallback, resultFileCallback, successResultCallback, errorResultCallback, streamingHandler, progressBar=None):
+    def __init__(self, literalResultCallback, resultFileCallback, successResultCallback, errorResultCallback, streamingHandler, progressBar=None, statusLabel=None):
         QObject.__init__(self)
         self._getLiteralResult = literalResultCallback
         self._resultFileCallback = resultFileCallback
@@ -92,14 +92,15 @@ class ExecutionResult(QObject):
         self._streamingHandler = streamingHandler
         self._processExecuted = False
         self.progressBar = progressBar
+        self.statusLabel = statusLabel
         self.noFilesToFetch = 0
 
     def executeProcess(self, processUrl, requestXml):
         self._processExecuted = False
         self.noFilesToFetch = 0
 
-        postData = QByteArray()
-        postData.append(requestXml)
+        #postData = QByteArray()
+        #postData.append(unicode(requestXml))
     
         scheme = processUrl.scheme()
         path = processUrl.path()
@@ -115,9 +116,9 @@ class ExecutionResult(QObject):
     
         thePostHttp = QgsNetworkAccessManager.instance()
         request = QNetworkRequest(processUrl)
-        request.setHeader( QNetworkRequest.ContentTypeHeader, "text/xml" )
+        request.setHeader( QNetworkRequest.ContentTypeHeader, "text/xml; charset=utf-8" )
         #qDebug("Post REQUEST=" + pystring(postData))
-        self.thePostReply = thePostHttp.post(request, postData)
+        self.thePostReply = thePostHttp.post(request, requestXml.encode("utf-8"))
         self.thePostReply.finished.connect(partial(self.resultHandler, self.thePostReply) )
         
 
@@ -181,8 +182,10 @@ class ExecutionResult(QObject):
 
                 # Get the encoding of the result, it can be used decoding base64
                 encoding = pystring(complexData.attribute("encoding", "")).lower()
-                schema = pystring(reference.attribute("schema", "")).lower()                
-
+                try:
+                  schema = pystring(reference.attribute("schema", "")).lower()                
+                except:
+                  pass
 
                 if "playlist" in self.mimeType:
                   playlistUrl = f_element.elementsByTagNameNS("http://www.opengis.net/wps/1.0.0", "ComplexData").at(0).toElement().text()
@@ -215,8 +218,10 @@ class ExecutionResult(QObject):
             try:
                 child = status.at(0).firstChildElement()
                 if child.localName() == "ProcessSucceeded":
+                    print >> sys.stderr,"ProcessSucceeded"
                     self._successResultCallback()
                 else:
+                    print >> sys.stderr,child.text()
                     if child.localName() == "ProcessAccepted":
                         self.showProgressBar(0,100,child.text())
                     else:
@@ -230,6 +235,8 @@ class ExecutionResult(QObject):
                                 return False
                             else:
                                 self.errorHandler(child.text())
+                    import time
+                    time.sleep(1.6)
             except Exception,e:
                 QMessageBox.warning(None, '', 
                     pystring(QApplication.translate("QgsWps", "WPS Error: ")+str(e)))
@@ -237,7 +244,7 @@ class ExecutionResult(QObject):
 
     def fetchResult(self, encoding, schema,  fileLink, identifier, mimeType):
         self.noFilesToFetch += 1
-
+        print >> sys.stderr,"File to fetch "+str(self.noFilesToFetch)
         url = QUrl(fileLink)
         self.myHttp = QgsNetworkAccessManager.instance()
         self.theReply = self.myHttp.get(QNetworkRequest(url))
@@ -247,8 +254,8 @@ class ExecutionResult(QObject):
         self.encoding = encoding
         self.schema = schema
         self.theReply.finished.connect(partial(self.getResultFile, identifier, mimeType, encoding, schema,  self.theReply))
-        self.theReply.downloadProgress.connect(lambda done,  all,  status="download": self.showProgressBar(done,  all,  status)) 
-
+        self.theReply.downloadProgress.connect(lambda done,  all,  status="download": self.showProgressBar(done,  all,  status))
+        
     def getResultFile(self, identifier, mimeType, encoding, schema,  reply):
         # Check if there is redirection        
         try:
@@ -278,6 +285,8 @@ class ExecutionResult(QObject):
         
         complete = status == "aborted" or status == "finished" or status == "error"
 
+        self.statusLabel.setText(status)
+
         self.progressBar.setRange(done, total)
         if status == "upload" and done == total:
             status = "processing"
@@ -294,7 +303,7 @@ class ExecutionResult(QObject):
          if resultXML:
            qDebug(resultXML)
            query = QXmlQuery(QXmlQuery.XSLT20)
-           xslFile = QFile(":/plugins/wps/exception.xsl")
+           xslFile = QFile(":/plugins/QgsWPSClient/exception.xsl")
            xslFile.open(QIODevice.ReadOnly)
            bRead = query.setFocus(resultXML)
            query.setQuery(xslFile)

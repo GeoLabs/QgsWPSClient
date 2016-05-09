@@ -23,7 +23,7 @@ def description():
   return "Client for Web Processing Services"
 
 def version():
-  return "2.0.15"
+  return "2.0.17"
 
 def qgisMinimumVersion():
   return "1.5"  
@@ -32,7 +32,7 @@ def qgisMaximumVersion():
   return "2.99"    
 
 def date():
-    return '2015-03-30'
+    return '2016-05-16'
     
 def email():
     return 'horst.duester@sourcepole.ch'
@@ -41,7 +41,7 @@ def author():
   return "Dr. Horst Duester / Sourcepole AG Zurich"
   
 def icon():
-	return "images/wps-add.png"   
+	return "images/icon.png"   
 
 def homepage():
   return "http://www.geolabs.fr"

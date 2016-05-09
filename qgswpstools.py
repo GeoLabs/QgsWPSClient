@@ -438,15 +438,21 @@ class QgsWpsTools(QObject):
 
   def addDocumentationTab(self, dlgProcessTab,  abstract):
     # Check for URL
-    
-    try:
-      textBox = QWebView(dlgProcessTab)
-      textBox.load(QUrl(abstract))
-      textBox.show()
-    except:
-      textBox = QTextBrowser(dlgProcessTab)
-      textBox.setText(pystring(abstract))
-
+    if abstract[:7]=="http://" or abstract[:8]=="https://" or abstract[:7]=="ftp://":
+      try:
+        textBox = QWebView(dlgProcessTab)
+        textBox.load(QUrl(abstract))
+        textBox.show()
+      except:
+        textBox = QTextBrowser(dlgProcessTab)
+        textBox.setText(pystring(abstract))
+    else:
+        import HTMLParser
+        h = HTMLParser.HTMLParser()
+        textBox = QWebView(dlgProcessTab)
+        #print >> sys.stderr,h.unescape(unicode(abstract).encode("utf-8"))
+        #print >> sys.stderr,unicode(abstract).encode("utf-8")
+        textBox.setHtml(h.unescape(unicode(abstract).encode("utf-8")))
     dlgProcessTab.addTab(textBox, "Documentation")
 
 
